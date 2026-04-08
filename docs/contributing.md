@@ -1,8 +1,9 @@
-# Contributing
+﻿# Contributing
 
-We can always use your help to improve Next.js FastAPI Template! Please feel free to tackle existing [issues](https://github.com/vintasoftware/nextjs-fastapi-template/issues). If you have a new idea, please create a thread on [Discussions](https://github.com/vintasoftware/django-ai-assistant/discussions).
+欢迎参与 Next.js FastAPI Template 的改进！你可以直接认领现有 [issues](https://github.com/vintasoftware/nextjs-fastapi-template/issues)。
+如果你有新的想法，欢迎在 [Discussions](https://github.com/vintasoftware/django-ai-assistant/discussions) 发起讨论。
 
-Please follow this guide to learn more about how to develop and test the project locally, before opening a pull request.
+在提交 Pull Request 之前，请先按本指南完成本地开发与测试环境准备。
 
 ## Local Dev Setup
 
@@ -12,32 +13,29 @@ Please follow this guide to learn more about how to develop and test the project
 git clone git@github.com:vintasoftware/nextjs-fastapi-template.git
 ```
 
-Check the [Get Started](get-started.md#setup) page to complete the setup.
-
+请先阅读 [Get Started](get-started.md#setup) 完成基础环境配置。
 
 ## Install pre-commit hooks
 
-Check the [Additional Settings - Install pre-commit hooks](additional-settings.md#pre-commit-setup) section to complete the setup.
+请参考 [Additional Settings - Install pre-commit hooks](additional-settings.md#pre-commit-setup) 完成配置。
 
-
-It's critical to run the pre-commit hooks before pushing your code to follow the project's code style, and avoid linting errors.
+在推送代码前执行 pre-commit 很重要，这能确保代码风格统一并避免 lint 错误。
 
 ## Updating the OpenAPI schema
 
-It's critical to update the OpenAPI schema when you make changes to the FastAPI routes or related files:
+当你修改 FastAPI 路由或相关文件时，必须同步更新 OpenAPI schema。
 
-Check the [Additional Settings - Manual execution of hot reload commands](additional-settings.md#manual-execution-of-hot-reload-commands) section to run the command.
+请参考 [Additional Settings - Manual execution of hot reload commands](additional-settings.md#manual-execution-of-hot-reload-commands) 执行对应命令。
 
 ## Tests
 
-Check the [Additional Settings - Testing](additional-settings.md#testing) section to run the tests.
+请参考 [Additional Settings - Testing](additional-settings.md#testing) 的说明运行测试。
 
 ## Documentation
 
-We use [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) to generate the documentation from markdown files.
-Check the files in the `docs` directory.
+文档由 [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) 从 Markdown 文件生成，文档源文件位于 `docs` 目录。
 
-To run the documentation locally, you need to run:
+如需本地预览文档，请执行：
 
 ```bash
 uv run mkdocs serve
@@ -46,12 +44,12 @@ uv run mkdocs serve
 ## Release
 
 !!! info
-    The backend and the frontend are versioned together, that is, they should have the same version number.
+    后端与前端使用同一版本号进行发布，也就是说两者版本号应保持一致。
 
-To release and publish a new version, follow these steps:
+发布新版本的步骤如下：
 
-1. Update the version in `fastapi_backend/pyproject.toml`, `nextjs-frontend/package.json`.
-2. Update the changelog in `CHANGELOG.md`.
-3. Open a PR with the changes.
-4. Once the PR is merged, run the [Release GitHub Action](https://github.com/vintasoftware/nextjs-fastapi-template/actions/workflows/release.yml) to create a draft release.
-5. Review the draft release, ensure the description has at least the associated changelog entry, and publish it.
+1. 更新 `fastapi_backend/pyproject.toml` 与 `nextjs-frontend/package.json` 中的版本号。
+2. 更新 `CHANGELOG.md`。
+3. 提交并创建 PR。
+4. PR 合并后，运行 [Release GitHub Action](https://github.com/vintasoftware/nextjs-fastapi-template/actions/workflows/release.yml) 生成草稿版 Release。
+5. 检查草稿 Release，确认描述中至少包含本次变更对应的 changelog 条目，然后发布。
