@@ -16,6 +16,12 @@ from .utils import simple_generate_unique_route_id
 from app.routes.items import router as items_router
 # 全局配置。
 from app.config import settings
+# 健康检查路由
+from app.routes.health import router as health_router
+# 聊天路由
+from app.routes.chat import router as chat_router
+# 会话历史路由
+from app.routes.sessions import router as sessions_router
 
 # 创建 FastAPI 应用实例。
 app = FastAPI(
@@ -71,5 +77,12 @@ app.include_router(
 
 # 注册 Item 业务路由，前缀为 /items。
 app.include_router(items_router, prefix="/items")
+# 注册健康检查路由，前缀为 /health。
+app.include_router(health_router, prefix="/health")
+# Agent 聊天流式接口前缀
+app.include_router(chat_router, prefix="/api/v1/chat")
+# 会话历史接口前缀
+app.include_router(sessions_router, prefix="/api/v1/sessions")
+
 # 启用 fastapi-pagination 功能（必须调用一次）。
 add_pagination(app)

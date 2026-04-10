@@ -54,3 +54,17 @@ class ItemRead(ItemBase):
 
     # 允许从 ORM 对象直接构造响应模型（Pydantic v2 写法）。
     model_config = {"from_attributes": True}
+
+# ---------------------------
+# Agent Chat: request schema
+# ---------------------------
+
+class ChatRequest(BaseModel):
+    # 当前用户 ID（后续可和登录用户做一致性校验）
+    user_id: str
+    # 会话 ID（同一会话多轮对话复用）
+    session_id: str
+    # 用户本轮输入
+    message: str
+    # 页面上下文（先可选，后面阶段会真正使用）
+    page_context: dict | None = None

@@ -52,6 +52,14 @@ import type {
   DeleteItemData,
   DeleteItemResponses,
   DeleteItemErrors,
+  HealthCheckData,
+  HealthCheckResponses,
+  ChatStreamData,
+  ChatStreamResponses,
+  ChatStreamErrors,
+  GetSessionHistoryData,
+  GetSessionHistoryResponses,
+  GetSessionHistoryErrors,
 } from "./types.gen";
 import { client } from "./client.gen";
 
@@ -413,6 +421,61 @@ export const deleteItem = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/items/{item_id}",
+    ...options,
+  });
+};
+
+/**
+ * Health Check
+ */
+export const healthCheck = <ThrowOnError extends boolean = false>(
+  options?: Options<HealthCheckData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    HealthCheckResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    url: "/health/",
+    ...options,
+  });
+};
+
+/**
+ * Chat Stream
+ */
+export const chatStream = <ThrowOnError extends boolean = false>(
+  options: Options<ChatStreamData, ThrowOnError>,
+) => {
+  return (options.client ?? client).post<
+    ChatStreamResponses,
+    ChatStreamErrors,
+    ThrowOnError
+  >({
+    responseType: "json",
+    url: "/api/v1/chat/stream",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+};
+
+/**
+ * Get Session History
+ */
+export const getSessionHistory = <ThrowOnError extends boolean = false>(
+  options: Options<GetSessionHistoryData, ThrowOnError>,
+) => {
+  return (options.client ?? client).get<
+    GetSessionHistoryResponses,
+    GetSessionHistoryErrors,
+    ThrowOnError
+  >({
+    responseType: "json",
+    url: "/api/v1/sessions/{session_id}",
     ...options,
   });
 };

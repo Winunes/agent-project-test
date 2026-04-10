@@ -1,17 +1,11 @@
-"""ORM 模型定义：描述数据库表结构与表之间关系。"""
+"""ORM models."""
 
-# fastapi-users 提供的“UUID 主键用户表”基类。
-from fastapi_users.db import SQLAlchemyBaseUserTableUUID
-# DeclarativeBase 是 SQLAlchemy 2.x 的声明式基类。
-from sqlalchemy.orm import DeclarativeBase
-# Column/类型/外键用于声明字段。
-from sqlalchemy import Column, String, Integer, ForeignKey
-# relationship 用于声明 ORM 层的一对多/多对一关系。
-from sqlalchemy.orm import relationship
-# PostgreSQL UUID 字段类型。
-from sqlalchemy.dialects.postgresql import UUID
-# uuid4 用于生成默认主键值。
 from uuid import uuid4
+
+from fastapi_users.db import SQLAlchemyBaseUserTableUUID
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import DeclarativeBase, relationship
 
 
 # 所有模型统一继承的基类（承载 metadata）。
@@ -46,3 +40,46 @@ class Item(Base):
 
     # 多对一关系：每个 Item 归属于一个 User。
     user = relationship("User", back_populates="items")
+
+
+class ChatSession(Base):
+    __tablename__ = "chat_sessions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    # 前端传入的会话 ID（字符串），用于跨请求串起同一会话
+    session_id = Column(String, nullable=False, unique=True, index=True)
+    # MVP 先用字符串 user_id（前端当前也是字符串）
+    user_id = Column(String, nullable=False, index=True)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )
+
+    messages = relationship(
+        "ChatMessage",
+        back_populates="session",
+        cascade="all, delete-orphan",
+        order_by="ChatMessage.created_at",
+    )
+
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    chat_session_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("chat_sessions.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    role = Column(String, nullable=False)  # user | assistant | system
+    content = Column(Text, nullable=False)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    session = relationship("ChatSession", back_populates="messages")

@@ -237,3 +237,112 @@
 ## `overrides` 目录文件
 
 - `overrides/main.html`：MkDocs 主题主模板覆盖文件。
+
+
+
+```
+一、总览主链
+浏览器页面(Next.js)
+→ Next 中间件 proxy(request) [只匹配 /dashboard/:path*]
+→ Dashboard Server Component / Server Action
+→ clientService.ts 重新导出的 OpenAPI SDK
+→ sdk.gen.ts 里的 readItem/createItem/deleteItem/usersCurrentUser
+→ client.gen.ts 的 beforeRequest() + request()
+→ Axios 发 HTTP 请求到 FastAPI
+→ FastAPI 的 CORSMiddleware（后端中间件）
+→ FastAPI 路由函数（/items、/users/me、/auth/jwt/login）
+→ Depends 注入：current_active_user + get_async_session
+→ SQLAlchemy 异步查询/写入
+→ PostgreSQL
+→ SQLAlchemy 结果转 Pydantic 响应
+→ Axios 收到 response.data
+→ Server Action/Server Component 返回
+→ Next.js 渲染 HTML/更新 UI
+→ 浏览器展示
+```
+
+```
+二、访问 Dashboard（鉴权校验链）
+GET /dashboard
+→ proxy.ts: 读 accessToken cookie
+→ 无 token：redirect /login（结束）
+→ 有 token：usersCurrentUser({ Authorization: Bearer ... })
+→ FastAPI /users/me
+→ current_active_user 校验 JWT
+→ 校验失败：401 → proxy 重定向 /login
+→ 校验成功：NextResponse.next()
+→ 继续进入 /dashboard 页面逻辑
+```
+
+```
+三、登录链（authJwtLogin）
+登录页 form 提交
+→ useActionState 触发 login Server Action
+→ login-action.ts: zod 校验
+→ authJwtLogin(input)
+→ POST /auth/jwt/login
+→ FastAPI Users: authenticate(email/password)
+→ 成功生成 JWT(access_token)
+→ 返回 {access_token, token_type}
+→ Server Action 写 cookie: accessToken
+→ redirect /dashboard
+→ 下次访问 /dashboard 时由 proxy 校验并放行
+```
+
+```
+四、读列表链（/items）
+Dashboard page.tsx
+→ fetchItems(page,size) Server Action
+→ readItem({ query, headers.Authorization })
+→ GET /items/
+→ FastAPI read_item()
+→ Depends(current_active_user) 先鉴权
+→ Depends(get_async_session) 拿 DB session
+→ select(Item).filter(Item.user_id == user.id)
+→ PostgreSQL 返回该用户分页数据
+→ Page[ItemRead] JSON 返回前端
+→ Table 渲染 items
+```
+
+```
+五、新增链（/items POST）
+Add Item 页面 form 提交
+→ addItem Server Action
+→ zod 校验表单
+→ createItem({ body, Authorization })
+→ POST /items/
+→ FastAPI create_item()
+→ current_active_user 鉴权
+→ Item(**item.model_dump(), user_id=user.id)
+→ db.add → db.commit → db.refresh
+→ 返回新记录
+→ Server Action redirect /dashboard
+→ 页面重新读取列表并展示新数据
+```
+
+```
+六、删除链（/items/{id} DELETE）
+点击 DeleteButton
+→ removeItem(itemId) Server Action
+→ deleteItem({ path.item_id, Authorization })
+→ DELETE /items/{item_id}
+→ FastAPI delete_item()
+→ current_active_user 鉴权
+→ 查询 Item.id == item_id 且 Item.user_id == user.id
+→ 找不到：404（无权限或不存在）
+→ 找到：db.delete → db.commit
+→ 返回成功消息
+→ revalidatePath('/dashboard')
+→ 前端列表刷新
+```
+
+```
+七、中间件到底在哪里（最简图）
+浏览器请求 /dashboard
+→ Next proxy 中间件（前端入口守卫）
+→ Next 页面/Action
+→ FastAPI CORSMiddleware（后端全局中间件）
+→ FastAPI 路由 + Depends 依赖
+→ 数据库
+```
+

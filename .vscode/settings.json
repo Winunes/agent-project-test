@@ -1,0 +1,8 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/fastapi_backend/.venv/Scripts/python.exe",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/fastapi_backend"
+  ],
+  "python.terminal.activateEnvironment": true,
+  "python.analysis.diagnosticMode": "workspace"
+}

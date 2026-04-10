@@ -59,6 +59,30 @@ export type BodyAuthVerifyVerify = {
 };
 
 /**
+ * ChatRequest
+ */
+export type ChatRequest = {
+  /**
+   * User Id
+   */
+  user_id: string;
+  /**
+   * Session Id
+   */
+  session_id: string;
+  /**
+   * Message
+   */
+  message: string;
+  /**
+   * Page Context
+   */
+  page_context?: {
+    [key: string]: unknown;
+  } | null;
+};
+
+/**
  * ErrorModel
  */
 export type ErrorModel = {
@@ -742,6 +766,72 @@ export type DeleteItemErrors = {
 export type DeleteItemError = DeleteItemErrors[keyof DeleteItemErrors];
 
 export type DeleteItemResponses = {
+  /**
+   * Successful Response
+   */
+  200: unknown;
+};
+
+export type HealthCheckData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/health/";
+};
+
+export type HealthCheckResponses = {
+  /**
+   * Successful Response
+   */
+  200: unknown;
+};
+
+export type ChatStreamData = {
+  body: ChatRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/chat/stream";
+};
+
+export type ChatStreamErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type ChatStreamError = ChatStreamErrors[keyof ChatStreamErrors];
+
+export type ChatStreamResponses = {
+  /**
+   * Successful Response
+   */
+  200: unknown;
+};
+
+export type GetSessionHistoryData = {
+  body?: never;
+  path: {
+    /**
+     * Session Id
+     */
+    session_id: string;
+  };
+  query?: never;
+  url: "/api/v1/sessions/{session_id}";
+};
+
+export type GetSessionHistoryErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type GetSessionHistoryError =
+  GetSessionHistoryErrors[keyof GetSessionHistoryErrors];
+
+export type GetSessionHistoryResponses = {
   /**
    * Successful Response
    */
