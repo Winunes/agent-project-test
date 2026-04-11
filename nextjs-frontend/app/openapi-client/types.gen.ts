@@ -107,6 +107,42 @@ export type HttpValidationError = {
 };
 
 /**
+ * IngestDocument
+ */
+export type IngestDocument = {
+  /**
+   * Document Id
+   * 文档ID
+   */
+  document_id: string;
+  /**
+   * Source
+   * 文档来源
+   */
+  source: string;
+  /**
+   * Title
+   * 文档标题
+   */
+  title: string;
+  /**
+   * Content
+   * 文档正文文本
+   */
+  content: string;
+};
+
+/**
+ * IngestRequest
+ */
+export type IngestRequest = {
+  /**
+   * Documents
+   */
+  documents: Array<IngestDocument>;
+};
+
+/**
  * ItemCreate
  */
 export type ItemCreate = {
@@ -832,6 +868,30 @@ export type GetSessionHistoryError =
   GetSessionHistoryErrors[keyof GetSessionHistoryErrors];
 
 export type GetSessionHistoryResponses = {
+  /**
+   * Successful Response
+   */
+  200: unknown;
+};
+
+export type IngestDocumentsData = {
+  body: IngestRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/ingest/documents";
+};
+
+export type IngestDocumentsErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type IngestDocumentsError =
+  IngestDocumentsErrors[keyof IngestDocumentsErrors];
+
+export type IngestDocumentsResponses = {
   /**
    * Successful Response
    */

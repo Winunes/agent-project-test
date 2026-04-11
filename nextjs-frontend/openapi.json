@@ -927,6 +927,45 @@
           }
         }
       }
+    },
+    "/api/v1/ingest/documents": {
+      "post": {
+        "tags": [
+          "ingest"
+        ],
+        "summary": "Ingest Documents",
+        "operationId": "ingest_documents",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1077,6 +1116,54 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "IngestDocument": {
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "title": "Document Id",
+            "description": "\u6587\u6863ID"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "\u6587\u6863\u6765\u6e90"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "\u6587\u6863\u6807\u9898"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "\u6587\u6863\u6b63\u6587\u6587\u672c"
+          }
+        },
+        "type": "object",
+        "required": [
+          "document_id",
+          "source",
+          "title",
+          "content"
+        ],
+        "title": "IngestDocument"
+      },
+      "IngestRequest": {
+        "properties": {
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/IngestDocument"
+            },
+            "type": "array",
+            "title": "Documents"
+          }
+        },
+        "type": "object",
+        "required": [
+          "documents"
+        ],
+        "title": "IngestRequest"
       },
       "ItemCreate": {
         "properties": {

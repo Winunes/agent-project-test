@@ -60,6 +60,9 @@ import type {
   GetSessionHistoryData,
   GetSessionHistoryResponses,
   GetSessionHistoryErrors,
+  IngestDocumentsData,
+  IngestDocumentsResponses,
+  IngestDocumentsErrors,
 } from "./types.gen";
 import { client } from "./client.gen";
 
@@ -477,5 +480,26 @@ export const getSessionHistory = <ThrowOnError extends boolean = false>(
     responseType: "json",
     url: "/api/v1/sessions/{session_id}",
     ...options,
+  });
+};
+
+/**
+ * Ingest Documents
+ */
+export const ingestDocuments = <ThrowOnError extends boolean = false>(
+  options: Options<IngestDocumentsData, ThrowOnError>,
+) => {
+  return (options.client ?? client).post<
+    IngestDocumentsResponses,
+    IngestDocumentsErrors,
+    ThrowOnError
+  >({
+    responseType: "json",
+    url: "/api/v1/ingest/documents",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });
 };

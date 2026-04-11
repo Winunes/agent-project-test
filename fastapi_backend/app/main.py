@@ -22,6 +22,8 @@ from app.routes.health import router as health_router
 from app.routes.chat import router as chat_router
 # 会话历史路由
 from app.routes.sessions import router as sessions_router
+# 文档入库路由
+from app.routes.ingest import router as ingest_router
 
 # 创建 FastAPI 应用实例。
 app = FastAPI(
@@ -83,6 +85,8 @@ app.include_router(health_router, prefix="/health")
 app.include_router(chat_router, prefix="/api/v1/chat")
 # 会话历史接口前缀
 app.include_router(sessions_router, prefix="/api/v1/sessions")
+# 文档入库接口前缀
+app.include_router(ingest_router, prefix="/api/v1/ingest")
 
 # 启用 fastapi-pagination 功能（必须调用一次）。
 add_pagination(app)

@@ -83,3 +83,39 @@ class ChatMessage(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     session = relationship("ChatSession", back_populates="messages")
+
+class Document(Base):
+    __tablename__ = "documents"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    document_id = Column(String, nullable=False, unique=True, index=True)
+    source = Column(String, nullable=False, index=True)
+    title = Column(String, nullable=False)
+    content = Column(Text, nullable=False)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    chunks = relationship(
+        "DocumentChunk",
+        back_populates="document",
+        cascade="all, delete-orphan",
+        order_by="DocumentChunk.chunk_index",
+    )
+
+
+class DocumentChunk(Base):
+    __tablename__ = "document_chunks"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    document_pk = Column(
+        UUID(as_uuid=True),
+        ForeignKey("documents.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    chunk_index = Column(Integer, nullable=False)
+    chunk_text = Column(Text, nullable=False)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    document = relationship("Document", back_populates="chunks")
